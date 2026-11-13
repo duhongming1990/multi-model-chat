@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Multi-model chat",
+    "description": "Ask once and call several models at the same time. Every round is saved, each answer can be liked, and a like analysis page ranks the models."
+  }
+}

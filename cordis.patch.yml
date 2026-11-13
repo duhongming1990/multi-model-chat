@@ -1,0 +1,17 @@
+- insert:
+    - id: multi-model-chat
+      name: '@local/multi-model-chat'
+      config:
+        # OpenAI 兼容网关（本机 Chat2API）
+        endpoint: http://localhost:8080/v1/chat/completions
+        # 在这里填写或直接在插件「设置」页保存；不要把真实密钥提交到仓库
+        apiKey: ''
+        # 默认并发调用的模型；页面里的模型选择器可临时增减
+        models:
+          - deepseek-v4-pro-think-search
+          - Doubao-pro-thinking
+          - GLM-5.1
+          - Qwen3.7-Max
+          - Kimi-K2.6
+        timeoutMs: 180000
+        historyLimit: 200
