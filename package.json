@@ -1,6 +1,6 @@
 {
   "name": "@local/multi-model-chat",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "description": "多模型对话：一次提问并发调用多个模型，保存每一组回答，逐条点赞并做模型点赞分析统计。",
@@ -14,6 +14,7 @@
     "index.js",
     "client.js",
     "cordis.patch.yml",
+    "assets",
     "locale/*.json",
     "icon.svg",
     "README.md",
