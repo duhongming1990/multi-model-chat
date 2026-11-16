@@ -151,3 +151,14 @@ scripts/markdown-test.mjs Markdown 渲染器与品牌图标映射的单元测试
 scripts/client-smoke.mjs  Client 模块加载、apply 注册与侧边栏图标的结构冒烟测试
 scripts/selftest.mjs      端到端 HTTP 自检
 ```
+
+## 发布到 npm（GitHub Actions）
+
+工作流：[`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml)
+
+- **触发**：发布 GitHub Release（tag 必须与 `package.json` 的 version 一致，`v1.2.0` 或 `1.2.0` 均可）；或在 Actions 页手动 `Run workflow`（可选 dist-tag：latest / next / beta，以及 dry-run）。
+- **Secret**：在仓库 `Settings → Secrets and variables → Actions` 添加 `NPM_TOKEN`（npm automation token，对该包有发布权限）。
+- **发布命令**：`npm publish --provenance --access public --tag <dist-tag>`，自动附 provenance 证明；发布前 `prepublishOnly` 会执行 `npm run check`（`node --check` 两个 JS 入口）。
+- **前置校验**：工作流会拒绝 `private: true`、`@local/` 作用域的包名、缺少 `dsh.bundle.patch` 的清单，以及 Release tag 与版本不一致的情况。
+- **改用 OIDC 可信发布**：在 npmjs.com 把本仓库/工作流配置为 trusted publisher，保留 `id-token: write`，删除 Publish 步骤里的 `NODE_AUTH_TOKEN` 即可不再使用长期 token。
+- **发布前必须改名**：当前清单是 `@local/multi-model-chat` + `private: true`，npm 上不可用；需改成公开唯一包名（如 `dsh-multi-model-chat`）并移除 `private`，同时把 `cordis.patch.yml` 的 `name:` 改成同一包名，然后重新安装插件。

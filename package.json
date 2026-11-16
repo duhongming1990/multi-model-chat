@@ -28,5 +28,12 @@
       "platform": "web",
       "immediately": true
     }
+  },
+  "scripts": {
+    "check": "node --check index.js && node --check client.js",
+    "prepublishOnly": "npm run check"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
