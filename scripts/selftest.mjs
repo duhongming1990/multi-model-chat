@@ -1,5 +1,5 @@
 /**
- * End-to-end self test for @local/multi-model-chat.
+ * End-to-end self test for dsh-multi-model-chat.
  *
  *   node scripts/selftest.mjs [origin]
  *

@@ -1,9 +1,8 @@
 {
-  "name": "@local/multi-model-chat",
+  "name": "dsh-multi-model-chat",
   "version": "1.2.0",
-  "private": true,
   "type": "module",
-  "description": "多模型对话：一次提问并发调用多个模型，保存每一组回答，逐条点赞并做模型点赞分析统计。",
+  "description": "多模型对话：一次提问并发调用多个 OpenAI 兼容模型，保存每组回答，逐条点赞并做模型点赞分析统计。",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -35,5 +34,29 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "harness",
+    "multi-model",
+    "chat",
+    "llm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duhongming1990/multi-model-chat.git"
+  },
+  "homepage": "https://github.com/duhongming1990/multi-model-chat#readme",
+  "bugs": {
+    "url": "https://github.com/duhongming1990/multi-model-chat/issues"
+  },
+  "engines": {
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": ">=3.18.1 <4.0.0"
   }
 }

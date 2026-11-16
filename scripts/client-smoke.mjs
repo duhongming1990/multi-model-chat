@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = readFileSync(path.join(root, 'client.js'), 'utf8');
-const PACKAGE = '@local/multi-model-chat';
+const PACKAGE = 'dsh-multi-model-chat';
 
 let captured = null;
 globalThis.window = {

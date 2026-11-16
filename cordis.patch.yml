@@ -1,6 +1,6 @@
 - insert:
     - id: multi-model-chat
-      name: '@local/multi-model-chat'
+      name: 'dsh-multi-model-chat'
       config:
         # OpenAI 兼容网关（本机 Chat2API）
         endpoint: http://localhost:8080/v1/chat/completions

@@ -1,4 +1,4 @@
-# 多模型对话 · @local/multi-model-chat (v1.2)
+# 多模型对话 · dsh-multi-model-chat (v1.2)
 
 一次提问，并发调用多个 OpenAI 兼容模型；每一组问答自动保存到本地；每条模型的回答都可以点赞，并提供模型点赞分析统计。
 
@@ -135,7 +135,7 @@
 
 未验证（环境限制）：本次会话没有浏览器控制，无法对四种布局、Markdown 排版和品牌图标在明/暗主题下的实际渲染效果做截图确认。安装或升级时已经打开的页面不会自动出现新客户端插件，**刷新一次页面**后由启动图加载即可（HMR 图与 bundle 已就绪，客户端注册逻辑已通过 stub 实跑验证）。
 
-排查：刷新后若左侧仍没有“多模型对话”图标，打开浏览器控制台看是否有该 bundle 的加载错误，并确认「插件中心 → 插件」中 `@local/multi-model-chat` 处于启用状态。
+排查：刷新后若左侧仍没有“多模型对话”图标，打开浏览器控制台看是否有该 bundle 的加载错误，并确认「插件中心 → 插件」中 `dsh-multi-model-chat` 处于启用状态。
 
 ## 目录
 
@@ -161,4 +161,4 @@ scripts/selftest.mjs      端到端 HTTP 自检
 - **发布命令**：`npm publish --provenance --access public --tag <dist-tag>`，自动附 provenance 证明；发布前 `prepublishOnly` 会执行 `npm run check`（`node --check` 两个 JS 入口）。
 - **前置校验**：工作流会拒绝 `private: true`、`@local/` 作用域的包名、缺少 `dsh.bundle.patch` 的清单，以及 Release tag 与版本不一致的情况。
 - **改用 OIDC 可信发布**：在 npmjs.com 把本仓库/工作流配置为 trusted publisher，保留 `id-token: write`，删除 Publish 步骤里的 `NODE_AUTH_TOKEN` 即可不再使用长期 token。
-- **发布前必须改名**：当前清单是 `@local/multi-model-chat` + `private: true`，npm 上不可用；需改成公开唯一包名（如 `dsh-multi-model-chat`）并移除 `private`，同时把 `cordis.patch.yml` 的 `name:` 改成同一包名，然后重新安装插件。
+- **改名已完成**：`package.json` 现在是 `dsh-multi-model-chat`（已移除 `private`，补充 license/repository/keywords/engines），`cordis.patch.yml` 的 `name:` 已同步为同一包名。发布前只需配置 `NPM_TOKEN`，然后创建 Release（或手动 Run workflow）。

@@ -1,5 +1,5 @@
 /**
- * Host half of @local/multi-model-chat.
+ * Host half of dsh-multi-model-chat.
  *
  * 一次提问 → 并发调用多个 OpenAI 兼容模型 → 把这一组问答保存下来 → 用户可以逐条点赞
  * → 汇总成模型点赞分析统计。
@@ -61,7 +61,7 @@ async function importDshPackage(spec) {
     }
     return await import(pathToFileURL(resolved).href);
   }
-  throw new Error(`@local/multi-model-chat: cannot locate ${spec} from ${import.meta.url}`);
+  throw new Error(`dsh-multi-model-chat: cannot locate ${spec} from ${import.meta.url}`);
 }
 
 const { default: z } = await importDshPackage('@deepseek-ai/schemastery');
@@ -69,7 +69,7 @@ const { default: z } = await importDshPackage('@deepseek-ai/schemastery');
 /* --------------------------------------------------------------- constants */
 
 const PLUGIN_NAME = 'multi-model-chat';
-const PACKAGE_NAME = '@local/multi-model-chat';
+const PACKAGE_NAME = 'dsh-multi-model-chat';
 const BASE = '/plugins-local/multi-model-chat';
 const GROUPS_PREFIX = `${BASE}/groups`;
 const TOOL_NAME = 'multi_model_chat';

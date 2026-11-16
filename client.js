@@ -1,5 +1,5 @@
 window.__ModuleLoader__.load({
-  id: '@local/multi-model-chat',
+  id: 'dsh-multi-model-chat',
   factory(require) {
     const React = require('react');
     const h = React.createElement;
