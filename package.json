@@ -17,7 +17,9 @@
     "locale/*.json",
     "icon.svg",
     "README.md",
-    "scripts/*.mjs"
+    "scripts/*.mjs",
+    "docs",
+    "LICENSE"
   ],
   "dsh": {
     "bundle": {
