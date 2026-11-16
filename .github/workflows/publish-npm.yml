@@ -8,12 +8,18 @@ name: Publish to npm
 #   - a manual run, with an optional dry-run and a choice of dist-tag
 #
 # Required repository secret
-#   NPM_TOKEN  an npm automation token with publish rights for this package.
+#   NPM_TOKEN  a granular npm access token with "Read and write" permission and
+#              "Bypass two-factor authentication" checked. npm no longer accepts
+#              classic tokens, and publishing always requires 2FA or a granular
+#              token that bypasses it.
 #              (Settings -> Secrets and variables -> Actions -> New repository secret)
 #
-# If you prefer npm trusted publishing (OIDC) over a token, configure the
-# package as a trusted publisher on npmjs.com, keep the `id-token: write`
-# permission below, and delete the NODE_AUTH_TOKEN line in the Publish step.
+# npm trusted publishing (OIDC) is the token-less alternative, but npm only lets
+# you configure a trusted publisher on a package that already exists. Publish the
+# first version with NPM_TOKEN (or locally), then configure
+# npmjs.com -> package -> Settings -> Trusted Publisher (GitHub Actions:
+# owner, repo, workflow file publish-npm.yml), keep `id-token: write`, and delete
+# the NODE_AUTH_TOKEN line below. This workflow upgrades npm so OIDC works.
 
 on:
   release:
@@ -57,6 +63,13 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; a newer CLI also gives the
+      # clearest diagnostics for 2FA/token problems.
+      - name: Upgrade npm
+        run: |
+          npm install -g npm@latest
+          npm --version
+
       - name: Validate the publishable manifest
         run: |
           node <<'NODE'
@@ -97,4 +110,11 @@ jobs:
             args+=(--dry-run)
           fi
           echo "npm publish ${args[*]}"
+          set +e
           npm publish "${args[@]}"
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            echo "::error::npm publish failed (exit $status). E403 'Two-factor authentication or granular access token with bypass 2fa enabled is required' means NPM_TOKEN must be a granular token with Bypass 2FA checked. See README '发布到 npm'."
+            exit "$status"
+          fi
