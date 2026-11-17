@@ -173,6 +173,8 @@ scripts/selftest.mjs      端到端 HTTP 自检
 - **触发**：发布 GitHub Release（tag 必须与 `package.json` 的 version 一致，`v1.2.0` 或 `1.2.0` 均可）；或在 Actions 页手动 `Run workflow`（可选 dist-tag：latest / next / beta，以及 dry-run）。
 - **Secret**：在仓库 `Settings → Secrets and variables → Actions` 添加 `NPM_TOKEN`。npm 自 2025-11 起只支持 **granular access token**，且发布要求 2FA 或 token 勾选 **Bypass two-factor authentication**：npmjs.com → 头像 → Access Tokens → Generate New Token → Granular Access Token → Permissions 选 *Read and write* → Packages 选择该包（首次发布前包还不存在，先选 *All packages*）→ 勾选 **Bypass two-factor authentication** → 生成后更新 Secret。
 - **常见错误**：`E403 ... Two-factor authentication or granular access token with bypass 2fa enabled is required` 即上面的 token 类型/2FA 问题；换 token 后重跑即可。
+- **本地 registry 是镜像时**：`npm publish` / `npm trust` 会打到镜像并报 404。仓库根的 `.npmrc` 已固定 `registry=https://registry.npmjs.org/`；在仓库外执行时用 `NPM_CONFIG_REGISTRY=https://registry.npmjs.org/` 覆盖。
+- **trusted publisher 要求包已存在**：首次发布必须先成功（token 或 OTP），之后才能 `npm trust github ...`；否则即使 registry 正确也会 404。
 - **首次发布不能直接用 OIDC**：npm 只允许给已存在的包配置 trusted publisher。先用 token（或本地 `npm publish --access public` + OTP）发布第一个版本，再到 npm 包设置 → Trusted Publisher 配 GitHub Actions（owner `duhongming1990`、repo `multi-model-chat`、workflow `publish-npm.yml`），之后可删除 `NODE_AUTH_TOKEN`，改用 `id-token: write` 的 OIDC 发布。
 - **发布命令**：`npm publish --provenance --access public --tag <dist-tag>`，自动附 provenance 证明；发布前 `prepublishOnly` 会执行 `npm run check`（`node --check` 两个 JS 入口）。
 - **前置校验**：工作流会拒绝 `private: true`、`@local/` 作用域的包名、缺少 `dsh.bundle.patch` 的清单，以及 Release tag 与版本不一致的情况。
