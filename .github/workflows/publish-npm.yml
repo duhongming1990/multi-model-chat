@@ -8,11 +8,24 @@ name: Publish to npm
 #   - a manual run, with an optional dry-run and a choice of dist-tag
 #
 # Required repository secret
-#   NPM_TOKEN  a granular npm access token with "Read and write" permission and
-#              "Bypass two-factor authentication" checked. npm no longer accepts
-#              classic tokens, and publishing always requires 2FA or a granular
-#              token that bypasses it.
+#   NPM_TOKEN  a granular npm access token with "Read and write (publish and
+#              stage)" permission. npm no longer accepts classic tokens, and
+#              bypass-2FA tokens are being restricted for direct publishing.
 #              (Settings -> Secrets and variables -> Actions -> New repository secret)
+#
+# Modes
+#   stage    (default) run `npm stage publish`: staging itself needs no 2FA, so a
+#            token works from CI; a maintainer then approves the staged version
+#            with 2FA on npmjs.com (security key/passkey works there) or with
+#            `npm stage approve <stage-id>`. This is the supported path for a
+#            brand-new package and for accounts whose second factor is a hardware
+#            security key rather than a TOTP app.
+#   publish  run `npm publish` directly. Use it only after this package has a
+#            trusted publisher configured on npmjs.com and NODE_AUTH_TOKEN is
+#            removed; direct token publishing is being retired by npm.
+#
+# Switch the default with the repository variable NPM_PUBLISH_MODE (stage|publish)
+# or the manual-run `mode` input.
 #
 # npm trusted publishing (OIDC) is the token-less alternative, but npm only lets
 # you configure a trusted publisher on a package that already exists. Publish the
@@ -35,8 +48,16 @@ on:
           - latest
           - next
           - beta
+      mode:
+        description: 'stage defers 2FA approval to npmjs.com; publish needs OIDC/trusted publishing'
+        required: true
+        default: stage
+        type: choice
+        options:
+          - stage
+          - publish
       dry-run:
-        description: Only run `npm publish --dry-run`
+        description: Only run the publish command with --dry-run
         required: true
         default: false
         type: boolean
@@ -103,18 +124,28 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DIST_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.dist-tag || 'latest' }}
+          PUBLISH_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || vars.NPM_PUBLISH_MODE || 'stage' }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || 'false' }}
         run: |
           args=(--provenance --access public --tag "$DIST_TAG")
           if [ "$DRY_RUN" = "true" ]; then
             args+=(--dry-run)
           fi
-          echo "npm publish ${args[*]}"
           set +e
-          npm publish "${args[@]}"
-          status=$?
+          if [ "$PUBLISH_MODE" = "publish" ]; then
+            echo "npm publish ${args[*]}"
+            npm publish "${args[@]}"
+            status=$?
+          else
+            echo "npm stage publish ${args[*]}"
+            npm stage publish "${args[@]}"
+            status=$?
+            if [ "$status" -eq 0 ]; then
+              echo "::notice::Staged. Approve with 2FA: npm stage list dsh-multi-model-chat then npm stage approve <stage-id>, or approve it in the staged-packages queue on npmjs.com."
+            fi
+          fi
           set -e
           if [ "$status" -ne 0 ]; then
-            echo "::error::npm publish failed (exit $status). E403 'Two-factor authentication or granular access token with bypass 2fa enabled is required' means NPM_TOKEN must be a granular token with Bypass 2FA checked. See README '发布到 npm'."
+            echo "::error::publishing failed (exit $status). For stage mode NPM_TOKEN needs 'Read and write (publish and stage)'. For direct mode npm requires OIDC/trusted publishing (bypass-2FA tokens are being retired). See README '发布到 npm'."
             exit "$status"
           fi
