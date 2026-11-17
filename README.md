@@ -31,15 +31,15 @@
 
 | 标签模式 | 纵向堆叠 |
 | --- | --- |
-| ![标签模式](docs/tags.png) | ![纵向堆叠](docs/stack.png) |
+| ![标签模式](https://raw.githubusercontent.com/duhongming1990/multi-model-chat/main/docs/tags.png) | ![纵向堆叠](https://raw.githubusercontent.com/duhongming1990/multi-model-chat/main/docs/stack.png) |
 
 | 横向排列 | 卡片布局 |
 | --- | --- |
-| ![横向排列](docs/row.png) | ![卡片布局](docs/cards.png) |
+| ![横向排列](https://raw.githubusercontent.com/duhongming1990/multi-model-chat/main/docs/row.png) | ![卡片布局](https://raw.githubusercontent.com/duhongming1990/multi-model-chat/main/docs/cards.png) |
 
 点赞与统计：
 
-![点赞与统计](docs/liked.png)
+![点赞与统计](https://raw.githubusercontent.com/duhongming1990/multi-model-chat/main/docs/liked.png)
 
 ## Markdown 与品牌图标
 
